@@ -13,7 +13,8 @@ It is based on ubuntu 18.04, and contains:
   - pyepics,
 - EPICS base 3.15.5,
 - SLAC IPMI wrappers,
-- SLAC's FirmwareLoader and ProgramFPGA script.
+- SLAC's FirmwareLoader and ProgramFPGA script,
+- smurftestapps repository.
 
 ## Source code
 
