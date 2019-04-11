@@ -38,7 +38,7 @@ To get the docker image, first you will need to install the docker engine in you
 docker pull tidair/smurf-base:<TAG>
 ```
 
-Where **<TAG>** represents the specific tagged version you want to use.
+Where <TAG> represents the specific tagged version you want to use.
 
 ## How to run the container
 
@@ -48,7 +48,7 @@ To start the container just execute the following command:
 docker run -ti --rm --name smurf-base tidair/smurf-base:<TAG>
 ```
 
-Where __<TAG>__ represents the specific tagged version you want to use.
+Where <TAG> represents the specific tagged version you want to use.
 
 You will be given a bash shell where you can run the any of the tools provided by this docker image. You can also add commands at the  of the docker run command, in this case the container will be started, the command will be run, and the container will be stopped.
 
