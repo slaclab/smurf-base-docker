@@ -21,6 +21,9 @@
 # Definitions #
 ###############
 
+# Shell PID
+top_pid=$$
+
 # TOP directory
 TOP=$( dirname "${BASH_SOURCE[0]}" )
 
