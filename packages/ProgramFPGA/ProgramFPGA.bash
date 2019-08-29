@@ -465,7 +465,7 @@ printf "New FPGA version:                                 0x${ver_new}\n"
 
 printf "Connection between CPU and FPGA (using ping):     "
 
-if /bin/ping -c 2 $FPGA_IP &> /dev/null ; then
+if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
     printf "FPGA connection OK!\n"
 else
     printf "FPGA unreachable!\n"
