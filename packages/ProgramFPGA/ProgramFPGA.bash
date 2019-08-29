@@ -194,7 +194,28 @@ rebootFPGA()
         exit
     else
         printf "FPGA booted after $((i*${retray_delay})) seconds\n"
+    fi
 
+    printf "Waiting for FPGA's ETH to come up...              "
+
+    # Wait until FPGA's ETH is ready
+    for i in $(seq 1 ${retry_max}); do
+
+        if /bin/ping -c 4 ${fpga_ip} &> /dev/null ; then
+           local ready_eth=1
+           break
+        else
+           sleep ${retray_delay}
+        fi
+
+    done
+
+    if [ -z ${ready_eth+x} ]; then
+        printf "FPGA's ETH didn't come up after $((${retry_max}*${retray_delay})) seconds. Aborting...\n\n"
+        kill -s TERM ${top_pid}
+        exit
+    else
+        printf "FPGA's ETH came up after $((i*${retray_delay})) seconds\n"
     fi
 }
 
