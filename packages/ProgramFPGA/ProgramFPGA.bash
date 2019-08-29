@@ -364,7 +364,7 @@ fi
 printf "Testing CPU and FPGA connection (with ping)...    "
 
 # Trying first with ping
-if $(/bin/ping -c 2 ${fpga_ip} &> /dev/null) ; then
+if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
     printf "FPGA connection OK!\n"
 else
     printf "Failed!\n"
