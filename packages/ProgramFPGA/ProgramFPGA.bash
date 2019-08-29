@@ -148,7 +148,7 @@ setSecondStageBoot()
 rebootFPGA()
 {
     local retry_max=10
-    local retray_delay=10
+    local retry_delay=10
     local bsi_state
 
     printf "Sending reboot command to FPGA...                 "
@@ -177,7 +177,7 @@ rebootFPGA()
     # Wait until FPGA boots
     for i in $(seq 1 ${retry_max}); do
 
-        sleep ${retray_delay}
+        sleep ${retry_delay}
         bsi_state=$(ipmitool -I lan -H ${shelfmanager} -t ${ipmb} -b 0 -A NONE raw 0x34 0xF4 2> /dev/null | awk '{print $1}')
 
         # Verify IPMI errors
@@ -189,11 +189,11 @@ rebootFPGA()
     done
 
     if [ -z ${ready+x} ]; then
-        printf "FPGA didn't boot after $((${retry_max}*${retray_delay})) seconds. Aborting...\n\n"
+        printf "FPGA didn't boot after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
         kill -s TERM ${top_pid}
         exit
     else
-        printf "FPGA booted after $((i*${retray_delay})) seconds\n"
+        printf "FPGA booted after $((i*${retry_delay})) seconds\n"
     fi
 
     printf "Waiting for FPGA's ETH to come up...              "
@@ -205,17 +205,17 @@ rebootFPGA()
            local ready_eth=1
            break
         else
-           sleep ${retray_delay}
+           sleep ${retry_delay}
         fi
 
     done
 
     if [ -z ${ready_eth+x} ]; then
-        printf "FPGA's ETH didn't come up after $((${retry_max}*${retray_delay})) seconds. Aborting...\n\n"
+        printf "FPGA's ETH didn't come up after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
         kill -s TERM ${top_pid}
         exit
     else
-        printf "FPGA's ETH came up after $((i*${retray_delay})) seconds\n"
+        printf "FPGA's ETH came up after $((i*${retry_delay})) seconds\n"
     fi
 }
 
