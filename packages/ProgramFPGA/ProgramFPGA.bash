@@ -21,6 +21,9 @@
 # Definitions #
 ###############
 
+# Shell PID
+top_pid=$$
+
 # TOP directory
 TOP=$( dirname "${BASH_SOURCE[0]}" )
 
@@ -145,7 +148,7 @@ setSecondStageBoot()
 rebootFPGA()
 {
     local retry_max=10
-    local retray_delay=10
+    local retry_delay=10
     local bsi_state
 
     printf "Sending reboot command to FPGA...                 "
@@ -174,24 +177,45 @@ rebootFPGA()
     # Wait until FPGA boots
     for i in $(seq 1 ${retry_max}); do
 
-        sleep ${retray_delay}
+        sleep ${retry_delay}
         bsi_state=$(ipmitool -I lan -H ${shelfmanager} -t ${ipmb} -b 0 -A NONE raw 0x34 0xF4 2> /dev/null | awk '{print $1}')
 
         # Verify IPMI errors
         if [ "$?" -eq 0 ] && [ ${bsi_state} -eq 3 ]; then
-            local ready=1
+            local ready_fpga=1
             break
         fi
 
     done
 
-    if [ -z ${ready+x} ]; then
-        printf "FPGA didn't boot after $((${retry_max}*${retray_delay})) seconds. Aborting...\n\n"
+    if [ -z ${ready_fpga+x} ]; then
+        printf "FPGA didn't boot after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
         kill -s TERM ${top_pid}
         exit
     else
-        printf "FPGA booted after $((i*${retray_delay})) seconds\n"
+        printf "FPGA booted after $((i*${retry_delay})) seconds\n"
+    fi
 
+    printf "Waiting for FPGA's ETH to come up...              "
+
+    # Wait until FPGA's ETH is ready
+    for i in $(seq 1 ${retry_max}); do
+
+        if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
+           local ready_eth=1
+           break
+        else
+           sleep ${retry_delay}
+        fi
+
+    done
+
+    if [ -z ${ready_eth+x} ]; then
+        printf "FPGA's ETH didn't come up after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
+        kill -s TERM ${top_pid}
+        exit
+    else
+        printf "FPGA's ETH came up after $((i*${retry_delay})) seconds\n"
     fi
 }
 
@@ -361,7 +385,7 @@ fi
 printf "Testing CPU and FPGA connection (with ping)...    "
 
 # Trying first with ping
-if $(/bin/ping -c 2 ${fpga_ip} &> /dev/null) ; then
+if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
     printf "FPGA connection OK!\n"
 else
     printf "Failed!\n"
@@ -462,7 +486,7 @@ printf "New FPGA version:                                 0x${ver_new}\n"
 
 printf "Connection between CPU and FPGA (using ping):     "
 
-if /bin/ping -c 2 $FPGA_IP &> /dev/null ; then
+if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
     printf "FPGA connection OK!\n"
 else
     printf "FPGA unreachable!\n"
