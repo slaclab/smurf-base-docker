@@ -201,7 +201,7 @@ rebootFPGA()
     # Wait until FPGA's ETH is ready
     for i in $(seq 1 ${retry_max}); do
 
-        if /bin/ping -c 4 ${fpga_ip} &> /dev/null ; then
+        if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
            local ready_eth=1
            break
         else
