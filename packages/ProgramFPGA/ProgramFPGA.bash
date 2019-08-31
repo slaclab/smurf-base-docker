@@ -182,13 +182,13 @@ rebootFPGA()
 
         # Verify IPMI errors
         if [ "$?" -eq 0 ] && [ ${bsi_state} -eq 3 ]; then
-            local ready=1
+            local ready_fpga=1
             break
         fi
 
     done
 
-    if [ -z ${ready+x} ]; then
+    if [ -z ${ready_fpga+x} ]; then
         printf "FPGA didn't boot after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
         kill -s TERM ${top_pid}
         exit
