@@ -17,6 +17,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     python3-dev \
     python3-pip \
     libreadline6-dev && \
+    gdb && \
     curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git-lfs && \
     git lfs install && \
