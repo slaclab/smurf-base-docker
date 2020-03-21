@@ -59,8 +59,15 @@ ENV PATH /usr/local/src/ProgramFPGA:${PATH}
 WORKDIR /usr/local/src
 RUN git clone https://github.com/slaclab/smurftestapps.git
 
-# Add the user cryo and the group smurf
-RUN groupadd smurf
-RUN useradd -d /home/cryo -M cryo
+# Create the user cryo and the group smurf. Add the cryo user
+# to the smurf group, as primary group. And create its home
+# directory with the right permissions
+RUN useradd -d /home/cryo -M cryo && \
+    groupadd smurf && \
+    usermod -aG smurf cryo && \
+    usermod -g smurf cryo && \
+    mkdir /home/cryo && \
+    chown cryo:smurf /home/cryo
 
+# Set the work directory to the root
 WORKDIR /
