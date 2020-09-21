@@ -367,6 +367,11 @@ fi
 ipmb=$(expr 0128 + 2 \* $slot)
 printf "IPMB address:                                     0x%X\n" ${ipmb}
 
+# If 1st stage boot method is used, then change bootload address and reboot
+if [ ! -z ${use_fsb+x} ]; then
+    setFirstStageBoot
+fi
+
 # Read crate ID from the shelfmanager, as a 4-digit hex number
 printf "Reading the Crate ID...                           "
 crate_id=$(getCrateId)
@@ -375,11 +380,6 @@ printf "0x${crate_id}\n"
 # Calculate FPGA IP subnet from the crate ID and slot number
 fpga_ip=$(getFpgaIp)
 printf "FPGA IP address:                                  ${fpga_ip}\n"
-
-# If 1st stage boot method is used, then change bootload address and reboot
-if [ ! -z ${use_fsb+x} ]; then
-    setFirstStageBoot
-fi
 
 # Check connection between CPU and FPGA.
 printf "Testing CPU and FPGA connection (with ping)...    "
