@@ -248,7 +248,7 @@ getFpgaIp()
     # Calculate FPGA IP subnet from the crate ID
     local subnet="10.$((0x${crate_id:0:2})).$((0x${crate_id:2:2}))"
 
-    # Calculate FPGA IP last octect from the slot number
+    # Calculate FPGA IP last octet from the slot number
     local fpga_ip="${subnet}.$(expr 100 + $slot)"
 
     echo ${fpga_ip}
@@ -315,7 +315,7 @@ if [ ! -f "${mcs_file}" ]; then
     exit 1
 fi
 
-# YAML definiton used by the programming tool
+# YAML definition used by the programming tool
 if [ -z ${use_fsb+x} ]; then
     yaml_file=${yaml_top}/2sb/FirmwareLoader.yaml
 else
@@ -327,7 +327,7 @@ printf "Verifying if MCS file is compressed...            "
 if [[ ${mcs_file} == *.gz ]]; then
     printf "Yes, GZ file detected.\n"
 
-    # Extract the MCS file into the remoe host's /tmp folder
+    # Extract the MCS file into the /tmp folder
     mcs=/tmp/$(basename "${mcs_file%.*}")
 
     printf "Extracting GZ file into CPU disk...               "
@@ -416,7 +416,7 @@ FirmwareLoader -r -Y ${yaml_file} -a ${fpga_ip} ${mcs}
 # Catch the return value from the FirmwareLoader application (0: Normal, 1: Error)
 ret=$?
 
-# Show result of the firmaware loading proceccess
+# Show result of the firmware loading processes
 printf "\n"
 if [ "${ret}" -eq 0 ]; then
     printf "FPGA programmed successfully!\n\n"
@@ -460,7 +460,7 @@ else
     printf "1st stage boot\n"
 fi
 
-printf "Shelfnamager name:                                ${shelfmanager}\n"
+printf "Shelfmanager name:                                ${shelfmanager}\n"
 
 printf "Crate ID:                                         ${crate_id}\n"
 
