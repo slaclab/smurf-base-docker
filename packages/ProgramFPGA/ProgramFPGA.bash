@@ -147,9 +147,15 @@ setSecondStageBoot()
 # Reboot FPGA
 rebootFPGA()
 {
+    local bsi_state
+    # If we know the FPGA IP, we try to ping it
+    # ${retry_max} times, with a delay of ${retry_delay}
+    # second between failed pings
     local retry_max=10
     local retry_delay=10
-    local bsi_state
+    # If we do not know the FPGA IP, when we simply wait for
+    # ${no_ping_delay} seconds after the the FGPA boots.
+    local no_ping_delay=40
 
     printf "Sending reboot command to FPGA...                 "
     ipmitool -I lan -H ${shelfmanager} -t ${ipmb} -b 0 -A NONE raw 0x2C 0x0A 0 0 2 0 &> /dev/null
@@ -196,26 +202,34 @@ rebootFPGA()
         printf "FPGA booted after $((i*${retry_delay})) seconds\n"
     fi
 
-    printf "Waiting for FPGA's ETH to come up...              "
-
-    # Wait until FPGA's ETH is ready
-    for i in $(seq 1 ${retry_max}); do
-
-        if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
-           local ready_eth=1
-           break
-        else
-           sleep ${retry_delay}
-        fi
-
-    done
-
-    if [ -z ${ready_eth+x} ]; then
-        printf "FPGA's ETH didn't come up after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
-        kill -s TERM ${top_pid}
-        exit
+    # If we don't know the FPGA IP, we wait for ${no_ping_delay} seconds.
+    # Otherwise, we try to ping the FPGA until it is online.
+    if [ -z ${fpga_ip+x} ]; then
+       printf "Waiting ${no_ping_delay} seconds...                             "
+	   sleep ${no_ping_delay}
+	   printf "Done!\n"
     else
-        printf "FPGA's ETH came up after $((i*${retry_delay})) seconds\n"
+        printf "Waiting for FPGA's ETH to come up...              "
+
+        # Wait until FPGA's ETH is ready
+        for i in $(seq 1 ${retry_max}); do
+
+            if /bin/ping -c 2 ${fpga_ip} &> /dev/null ; then
+               local ready_eth=1
+               break
+            else
+               sleep ${retry_delay}
+            fi
+
+        done
+
+        if [ -z ${ready_eth+x} ]; then
+            printf "FPGA's ETH didn't come up after $((${retry_max}*${retry_delay})) seconds. Aborting...\n\n"
+            kill -s TERM ${top_pid}
+            exit
+        else
+            printf "FPGA's ETH came up after $((i*${retry_delay})) seconds\n"
+        fi
     fi
 }
 
