@@ -205,7 +205,7 @@ rebootFPGA()
     # If we don't know the FPGA IP, we wait for ${no_ping_delay} seconds.
     # Otherwise, we try to ping the FPGA until it is online.
     if [ -z ${fpga_ip+x} ]; then
-       printf "Waiting ${no_ping_delay}s...                                    "
+       printf "Waiting ${no_ping_delay} seconds...                             "
 	   sleep ${no_ping_delay}
 	   printf "Done!\n"
     else
