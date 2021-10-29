@@ -24,7 +24,7 @@ EPICS based (version 3.15.5) source code is downloaded from its github repositor
 
 When a tag is pushed to this github repository, a new Docker image is automatically built and pushed to [Dockerhub](https://hub.docker.com/r/tidair/smurf-base) using travis. The resulting docker image is tagged with the same git tag string (as returned by `git describe --tags --always`).
 
-## How to get the container
+## Usage
 
 In your Dockerfile
 
