@@ -4,7 +4,7 @@
 
 This docker image, named **smurf-base** contains all the base tools used by the SMuRF project.
 
-It is based on ubuntu 18.04, and contains:
+It is based on ubuntu 22.04, and contains:
 - Basic system tools
 - python3
 - Python3 modules
@@ -39,3 +39,17 @@ docker run -ti --rm --name smurf-base tidair/smurf-base:TAG
 ```
 
 TAG represents the specific tagged version you want to use. You will be given a bash shell where you can run the any of the tools provided by this docker image. You can also add commands at the  of the docker run command, in this case the container will be started, the command will be run, and the container will be stopped. Note that the container must be run in a server with access to the ATCA system you plan to use. This image should be able to reach both the pysmurf server IOC as well as the timing pattern generator (TPG) IOC.
+
+## Building the image locally
+
+To test without releasing, can build locally by running
+
+```
+docker build . -t smurf-base
+```
+
+on the command line in the top smurf-base-docker repository directory.  If successful, can enter a bash session in the new image via
+
+```
+docker run -ti --rm --name smurf-base smurf-base:latest
+```
