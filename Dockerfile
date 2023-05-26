@@ -1,8 +1,9 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Intall system utilities
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
+    apt-get install -y --no-install-recommends tzdata &&\
     apt-get install -y \
     wget \
     curl \
@@ -62,8 +63,8 @@ RUN git clone https://github.com/slaclab/smurftestapps.git
 # Create the user cryo and the group smurf. Add the cryo user
 # to the smurf group, as primary group. And create its home
 # directory with the right permissions
-RUN useradd -d /home/cryo -M cryo && \
-    groupadd smurf && \
+RUN useradd -d /home/cryo -M cryo -u 1000 && \
+    groupadd smurf -g 1001 && \
     usermod -aG smurf cryo && \
     usermod -g smurf cryo && \
     mkdir /home/cryo && \
