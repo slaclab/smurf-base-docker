@@ -27,6 +27,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Install EPICS
 RUN mkdir -p /usr/local/src/epics/base-3.15.5
 WORKDIR /usr/local/src/epics/base-3.15.5
+# This patch works around an issue compiling EPICS 3.15 using newer
+# Ubuntu 22.04 compiler.
 ADD patches/epics.patch .
 RUN wget -c base-3.15.5.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.5.tar.gz -O - | tar zx --strip 1 && \
     patch -p1 < epics.patch && \
