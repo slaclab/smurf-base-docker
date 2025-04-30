@@ -56,10 +56,6 @@ ENV PATH /usr/local/src/FirmwareLoader:${PATH}
 ADD packages/ProgramFPGA /usr/local/src/ProgramFPGA
 ENV PATH /usr/local/src/ProgramFPGA:${PATH}
 
-# Install Smurf test apps
-WORKDIR /usr/local/src
-RUN git clone https://github.com/slaclab/smurftestapps.git
-
 # Create the user cryo and the group smurf. Add the cryo user
 # to the smurf group, as primary group. And create its home
 # directory with the right permissions
