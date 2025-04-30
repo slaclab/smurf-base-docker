@@ -27,7 +27,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Install EPICS
 RUN mkdir -p /usr/local/src/epics/base-3.15.5
 WORKDIR /usr/local/src/epics/base-3.15.5
+ADD patches/epics.patch .
 RUN wget -c base-3.15.5.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.5.tar.gz -O - | tar zx --strip 1 && \
+    patch -p1 < epics.patch && \
     make clean && make && make install && \
     find . -maxdepth 1 \
     ! -name bin -a ! -name lib -a ! -name include \
