@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-# Intall system utilities
+# Install system utilities
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
     apt-get install -y --no-install-recommends tzdata &&\
@@ -9,15 +9,18 @@ RUN DEBIAN_FRONTEND=noninteractive \
     curl \
     git \
     vim \
-    emacs \
     gnupg \
     net-tools \
     iputils-ping \
     ipmitool \
     python3 \
     python3-dev \
-    python3-pip \
-    libreadline6-dev \
+    python3-ipython \
+    python3-numpy \
+    python3-pyepics \
+    libreadline-dev \
+    ca-certificates \
+    build-essential \
     gdb && \
     curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git-lfs && \
@@ -25,25 +28,22 @@ RUN DEBIAN_FRONTEND=noninteractive \
     rm -rf /var/lib/apt/lists/*
 
 # Install EPICS
-RUN mkdir -p /usr/local/src/epics/base-3.15.5
-WORKDIR /usr/local/src/epics/base-3.15.5
-# This patch works around an issue compiling EPICS 3.15 using newer
-# Ubuntu 22.04 compiler.
-ADD patches/epics.patch .
-RUN wget -c base-3.15.5.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.5.tar.gz -O - | tar zx --strip 1 && \
-    patch -p1 < epics.patch && \
-    make clean && make && make install && \
-    find . -maxdepth 1 \
-    ! -name bin -a ! -name lib -a ! -name include \
-    -exec rm -rf {} + \
-    || true
-ENV EPICS_BASE /usr/local/src/epics/base-3.15.5
-ENV EPICS_HOST_ARCH linux-x86_64
-ENV PATH /usr/local/src/epics/base-3.15.5/bin/linux-x86_64:${PATH}
-ENV LD_LIBRARY_PATH /usr/local/src/epics/base-3.15.5/lib/linux-x86_64:${LD_LIBRARY_PATH}
-ENV PYEPICS_LIBCA /usr/local/src/epics/base-3.15.5/lib/linux-x86_64/libca.so
+ENV EPICS_BASE /usr/local/src/epics/base-3.15.9
 
-RUN pip3 install ipython numpy pyepics
+RUN mkdir -p "$EPICS_BASE"
+WORKDIR $EPICS_BASE
+
+RUN wget -c base-3.15.9.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.9.tar.gz -O - | tar zx --strip 1 && \
+    make clean && make -j"$(nproc)" && make install && \
+    find . -maxdepth 1 \
+    ! -name bin -a ! -name lib -a ! -name include -a ! -name startup \
+    -exec rm -rf {} + || true
+
+ENV EPICS_BASE /usr/local/src/epics/base-3.15.9
+ENV EPICS_HOST_ARCH linux-x86_64
+ENV PATH /usr/local/src/epics/base-3.15.9/bin/linux-x86_64:${PATH}
+ENV LD_LIBRARY_PATH /usr/local/src/epics/base-3.15.9/lib/linux-x86_64:${LD_LIBRARY_PATH}
+ENV PYEPICS_LIBCA /usr/local/src/epics/base-3.15.9/lib/linux-x86_64/libca.so
 
 # Add the IPMI package
 WORKDIR /usr/local/src
@@ -62,13 +62,16 @@ ENV PATH /usr/local/src/ProgramFPGA:${PATH}
 
 # Create the user cryo and the group smurf. Add the cryo user
 # to the smurf group, as primary group. And create its home
-# directory with the right permissions
-RUN useradd -d /home/cryo -M cryo -u 1000 && \
-    groupadd smurf -g 1001 && \
-    usermod -aG smurf cryo && \
-    usermod -g smurf cryo && \
-    mkdir /home/cryo && \
-    chown cryo:smurf /home/cryo
+# directory with the right permissions.  In Ubuntu 24.04
+# the ubuntu user already exists with the UID/GID we use.
+# Coopt it here.
+RUN set -eux; \
+    if ! getent group 1001 >/dev/null; then groupadd -g 1001 smurf; fi; \
+    usermod -l cryo ubuntu; \
+    usermod -d /home/cryo cryo; \
+    mkdir -p /home/cryo; \
+    chown -R cryo:1001 /home/cryo; \
+    usermod -g 1001 cryo
 
 # Set the work directory to the root
 WORKDIR /
