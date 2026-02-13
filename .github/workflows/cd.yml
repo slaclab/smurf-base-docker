@@ -11,7 +11,7 @@ jobs:
     steps:
       # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       # Get the git tag from the environmental variables
       # It will used to tag the docker image
