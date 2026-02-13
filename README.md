@@ -4,14 +4,14 @@
 
 This docker image, named **smurf-base** contains all the base tools used by the SMuRF project.
 
-It is based on ubuntu 22.04, and contains:
+It is based on ubuntu 24.04, and contains:
 - Basic system tools
 - python3
 - Python3 modules
   - ipython
   - numpy
   - pyepics
-- EPICS base 3.15.5
+- EPICS base 3.15.9
 - SLAC IPMI wrappers
 - SLAC's FirmwareLoader and ProgramFPGA script
 - smurftestapps repository
