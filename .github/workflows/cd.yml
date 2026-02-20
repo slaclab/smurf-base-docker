@@ -17,7 +17,7 @@ jobs:
       # It will used to tag the docker image
       - name: Get release tag
         id: get_tag
-        run: echo ::set-output name=tag::"${GITHUB_REF#refs/tags/}"
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
 
       # Setup docker build environment
       - name: Set up Docker Buildx
