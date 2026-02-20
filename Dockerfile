@@ -1,5 +1,8 @@
 FROM ubuntu:24.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install system utilities
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
