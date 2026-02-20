@@ -18,7 +18,7 @@ It is based on ubuntu 24.04, and contains:
 
 ## Source code
 
-EPICS based (version 3.15.5) source code is downloaded from its github repository https://github.com/epics-base. The IPMC package containing source code, libraries, and binaries was taken from SLAC's version, hosted internally. The package was manually copied into this repository in the form of a tarball. The FirmwareLoader binary was taken from SLAC's version, hosted internally. The binary was manually copied into this repository in the form of a tarball.
+EPICS based (version 3.15.9) source code is downloaded from its github repository https://github.com/epics-base. The IPMC package containing source code, libraries, and binaries was taken from SLAC's version, hosted internally. The package was manually copied into this repository in the form of a tarball. The FirmwareLoader binary was taken from SLAC's version, hosted internally. The binary was manually copied into this repository in the form of a tarball.
 
 ## Building the image
 

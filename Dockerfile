@@ -1,5 +1,8 @@
 FROM ubuntu:24.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install system utilities
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
@@ -28,7 +31,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     rm -rf /var/lib/apt/lists/*
 
 # Install EPICS
-ENV EPICS_BASE /usr/local/src/epics/base-3.15.9
+ENV EPICS_BASE=/usr/local/src/epics/base-3.15.9
 
 RUN mkdir -p "$EPICS_BASE"
 WORKDIR $EPICS_BASE
@@ -39,26 +42,26 @@ RUN wget -c base-3.15.9.tar.gz https://github.com/epics-base/epics-base/archive/
     ! -name bin -a ! -name lib -a ! -name include -a ! -name startup \
     -exec rm -rf {} + || true
 
-ENV EPICS_BASE /usr/local/src/epics/base-3.15.9
-ENV EPICS_HOST_ARCH linux-x86_64
-ENV PATH /usr/local/src/epics/base-3.15.9/bin/linux-x86_64:${PATH}
-ENV LD_LIBRARY_PATH /usr/local/src/epics/base-3.15.9/lib/linux-x86_64:${LD_LIBRARY_PATH}
-ENV PYEPICS_LIBCA /usr/local/src/epics/base-3.15.9/lib/linux-x86_64/libca.so
+ENV EPICS_BASE=/usr/local/src/epics/base-3.15.9
+ENV EPICS_HOST_ARCH=linux-x86_64
+ENV PATH=/usr/local/src/epics/base-3.15.9/bin/linux-x86_64:${PATH}
+ENV LD_LIBRARY_PATH="/usr/local/src/epics/base-3.15.9/lib/linux-x86_64:${LD_LIBRARY_PATH:-}"
+ENV PYEPICS_LIBCA=/usr/local/src/epics/base-3.15.9/lib/linux-x86_64/libca.so
 
 # Add the IPMI package
 WORKDIR /usr/local/src
 ADD packages/IPMC.tar.gz .
-ENV LD_LIBRARY_PATH /usr/local/src/IPMC/lib64:${LD_LIBRARY_PATH}
-ENV PATH /usr/local/src/IPMC/bin/x86_64-linux-dbg:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/src/IPMC/lib64:${LD_LIBRARY_PATH}
+ENV PATH=/usr/local/src/IPMC/bin/x86_64-linux-dbg:${PATH}
 
 # Add the FirmwareLoader binary
 RUN mkdir -p  /usr/local/src/FirmwareLoader/
 ADD packages/FirmwareLoader.tar.gz /usr/local/src/FirmwareLoader/
-ENV PATH /usr/local/src/FirmwareLoader:${PATH}
+ENV PATH=/usr/local/src/FirmwareLoader:${PATH}
 
 # Add the ProgramFPGA utility
 ADD packages/ProgramFPGA /usr/local/src/ProgramFPGA
-ENV PATH /usr/local/src/ProgramFPGA:${PATH}
+ENV PATH=/usr/local/src/ProgramFPGA:${PATH}
 
 # Create the user cryo and the group smurf. Add the cryo user
 # to the smurf group, as primary group. And create its home
