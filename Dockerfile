@@ -17,10 +17,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
     iputils-ping \
     ipmitool \
     python3 \
+    python3-venv \
+    python3-pip \
     python3-dev \
-    python3-ipython \
-    python3-numpy \
-    python3-pyepics \
     libreadline-dev \
     ca-certificates \
     build-essential \
@@ -29,6 +28,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git-lfs && \
     git lfs install && \
     rm -rf /var/lib/apt/lists/*
+
+# Create venv
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip3 install ipython numpy pyepics
 
 # Install EPICS
 ENV EPICS_BASE=/usr/local/src/epics/base-3.15.9
