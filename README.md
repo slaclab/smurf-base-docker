@@ -4,21 +4,21 @@
 
 This docker image, named **smurf-base** contains all the base tools used by the SMuRF project.
 
-It is based on ubuntu 22.04, and contains:
+It is based on ubuntu 20.04, and contains:
 - Basic system tools
 - python3
 - Python3 modules
   - ipython
   - numpy
   - pyepics
-- EPICS base 3.15.5
+- EPICS base 3.15.9
 - SLAC IPMI wrappers
 - SLAC's FirmwareLoader and ProgramFPGA script
 - smurftestapps repository
 
 ## Source code
 
-EPICS based (version 3.15.5) source code is downloaded from its github repository https://github.com/epics-base. The IPMC package containing source code, libraries, and binaries was taken from SLAC's version, hosted internally. The package was manually copied into this repository in the form of a tarball. The FirmwareLoader binary was taken from SLAC's version, hosted internally. The binary was manually copied into this repository in the form of a tarball.
+EPICS based (version 3.15.9) source code is downloaded from its github repository https://github.com/epics-base. The IPMC package containing source code, libraries, and binaries was taken from SLAC's version, hosted internally. The package was manually copied into this repository in the form of a tarball. The FirmwareLoader binary was taken from SLAC's version, hosted internally. The binary was manually copied into this repository in the form of a tarball.
 
 ## Building the image
 
